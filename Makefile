@@ -15,12 +15,34 @@ CLANG_LIBS= -lclangAnalysis -lclangApplyReplacements -lclangARCMigrate -lclangAS
 	    -lclangTidyUtils -lclangTidyZirconModule -lclangTooling -lclangToolingASTDiff \
 	    -lclangToolingCore -lclangToolingInclusions -lclangToolingRefactor
 
-all: spyc
+TARGET= spyc
 
-spyc: spyc.cc
-	clang++ -I /usr/lib/llvm-8/include $< -O0 -g -o $@ -Wl,--start-group $(CLANG_LIBS) -Wl,--end-group -lLLVM
+OBJDIR= build
+SRCDIR= src
+
+SRCS= CodeVisitor.cc spyc.cc
+OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
+
+CXX= clang++
+
+CFLAGS+= -O0 -g
+CXXFLAGS+= -I /usr/lib/llvm-8/include
+LDFLAGS+= -Wl,--start-group $(CLANG_LIBS) -Wl,--end-group -lLLVM
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) $^ $(LDFLAGS) -o $@ 
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cc | $(OBJDIR)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $@
 
 clean:
-	rm -f spyc
+	rm -f $(OBJS)
 
+distclean:
+	rm -rf $(OBJDIR)
 
