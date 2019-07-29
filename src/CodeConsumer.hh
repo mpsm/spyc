@@ -5,22 +5,21 @@
 #include <clang/AST/ASTContext.h>
 
 #include "CodeVisitor.hh"
+#include "CodeModel.hh"
 
 namespace spyc {
 
     class CodeConsumer : public clang::ASTConsumer {
     public:
-        explicit CodeConsumer(clang::ASTContext *astContext)
-            : visitor(astContext) {
-
-        }
+        explicit CodeConsumer(clang::ASTContext *astContext, CodeModel& model)
+            : _visitor(astContext, model) {}
 
         virtual void HandleTranslationUnit(clang::ASTContext &Context) {
-            visitor.TraverseDecl(Context.getTranslationUnitDecl());
+            _visitor.TraverseDecl(Context.getTranslationUnitDecl());
         }
 
     private:
-        CodeVisitor visitor;
+        CodeVisitor _visitor;
     };
 
 }

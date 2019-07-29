@@ -20,7 +20,7 @@ TARGET= spyc
 OBJDIR= build
 SRCDIR= src
 
-SRCS= CodeVisitor.cc spyc.cc
+SRCS= CodeModel.cc CodeVisitor.cc Method.cc spyc.cc
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
 
 CXX= clang++
