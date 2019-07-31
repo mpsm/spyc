@@ -4,7 +4,9 @@
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/Frontend/FrontendActions.h>
+
 #include <llvm/Support/CommandLine.h>
+#include <llvm/Support/ManagedStatic.h>
 
 #include <iostream>
 
@@ -42,6 +44,7 @@ static llvm::cl::OptionCategory category("SpyC");
 int main(int argc, const char **argv)
 {
     int err;
+    llvm::llvm_shutdown_obj llvmCleanup;
 
     spyc::CodeModel model;
 
