@@ -9,6 +9,8 @@ int baz()
     return 0;
 }
 
+void aaa();
+
 void foo(void)
 {
     bar();

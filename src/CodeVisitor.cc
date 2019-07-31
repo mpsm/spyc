@@ -27,8 +27,10 @@ bool CodeVisitor::VisitCallExpr(clang::CallExpr *expr)
 
 bool CodeVisitor::VisitFunctionDecl(clang::FunctionDecl *fd)
 {
-    auto f = _model.createFunction(fd->getNameAsString());
-    lastCaller = f;
+    if (fd->hasBody()) {
+        auto f = _model.createFunction(fd->getNameAsString());
+        lastCaller = f;
+    }
 
     return true;
 }
