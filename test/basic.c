@@ -13,4 +13,5 @@ void foo(void)
 {
     bar();
     baz();
+    bar();
 }

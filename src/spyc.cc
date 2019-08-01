@@ -10,6 +10,7 @@
 
 #include "CodeConsumer.hh"
 #include "CodeModel.hh"
+#include "DotOutputter.hh"
 
 class SpycFrontendAction : public clang::ASTFrontendAction {
 public:
@@ -43,7 +44,6 @@ int main(int argc, const char **argv)
     int err;
 
     spyc::CodeModel model;
-    std::cout << "SpyC - another C static analyzer" << std::endl;
 
     clang::tooling::CommonOptionsParser optionParser(argc, argv, category);
     clang::tooling::ClangTool tool(optionParser.getCompilations(), optionParser.getSourcePathList());
@@ -54,21 +54,9 @@ int main(int argc, const char **argv)
         return err;
     }
 
-    std::cout << "Dumping functions" << std::endl;
-    for (auto fp : model.getFunctions()) {
-        auto f = fp.second;
-        std::cout << fp.first << std::endl;
-        std::cout << "  Callers:" << std::endl;
-        for (auto weak_caller : f->getCallers()) {
-            auto caller = weak_caller.lock();
-            std::cout << "    " << caller->getName() << std::endl;
-        }
-
-        std::cout << "  Callees:" << std::endl;
-        for (auto weak_callee : f->getCallees()) {
-            auto callee = weak_callee.lock();
-            std::cout << "    " << callee->getName() << std::endl;
-        }
+    {
+        spyc::DotOutputter outputter(model);
+        outputter.outputCallGraph(std::cout);
     }
 
     return 0;

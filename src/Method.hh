@@ -25,6 +25,7 @@ namespace spyc {
     private:
         void addCaller(std::shared_ptr<Method> m);
         void addCallee(std::shared_ptr<Method> m);
+        void insertUniqueMethod(methodlist& mlist, std::shared_ptr<Method> m);
 
         methodlist callers;
         methodlist callees;
