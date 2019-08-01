@@ -23,8 +23,8 @@ namespace spyc {
     private:
         void useFunctionDecl(clang::FunctionDecl *fd);
 
-        CodeModel& _model;
         clang::ASTContext *ctx;
+        CodeModel& _model;
         std::shared_ptr<Method> lastCaller;
     };
 

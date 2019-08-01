@@ -32,6 +32,8 @@ namespace spyc {
         std::string _name;
     };
 
+    void linkMethods(std::shared_ptr<Method> caller, std::shared_ptr<Method> callee);
+
 }
 
 #endif /* __SPYC_METHOD_HH__ */
