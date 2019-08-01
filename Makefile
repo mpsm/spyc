@@ -1,3 +1,5 @@
+TARGET= spyc
+
 CLANG_LIBS= -lclangAnalysis -lclangApplyReplacements -lclangARCMigrate -lclangAST \
 	    -lclangASTMatchers -lclangBasic -lclangChangeNamespace -lclangCodeGen \
 	    -lclangCrossTU -lclangDaemon -lclangDoc -lclangDriver -lclangDynamicASTMatchers \
@@ -14,28 +16,40 @@ CLANG_LIBS= -lclangAnalysis -lclangApplyReplacements -lclangARCMigrate -lclangAS
 	    -lclangTidyPlugin -lclangTidyPortabilityModule -lclangTidyReadabilityModule \
 	    -lclangTidyUtils -lclangTidyZirconModule -lclangTooling -lclangToolingASTDiff \
 	    -lclangToolingCore -lclangToolingInclusions -lclangToolingRefactor
-
-TARGET= spyc
+CLANG_SYSROOT?= /usr/lib/llvm-8
 
 OBJDIR= build
 SRCDIR= src
 
 SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
+DEPS= $(OBJS:.o=.d)
 
+# g++ breaks build because of warnings caused by LLVM header files
 CXX= clang++
-
-CFLAGS+= -O0 -g
-CXXFLAGS+= -I /usr/lib/llvm-8/include
+CFLAGS+= -Wall -Werror
+CPPFLAGS+= -MMD -MP -MT $@ -MT $(@:.o=.d) -MF $(@:.o=.d)
+CXXFLAGS+= -I $(CLANG_SYSROOT)/include
+LDFLAGS+= -L $(CLANG_SYSROOT)/lib
 LDFLAGS+= -Wl,--start-group $(CLANG_LIBS) -Wl,--end-group -lLLVM
+
+# setup build type
+BUILD_TYPE?= release
+ifeq ($(BUILD_TYPE),release)
+CFLAGS+= -O3
+else ifeq ($(BUILD_TYPE),debug)
+CFLAGS+= -O0 -g
+else
+$(error "Invalid build type")
+endif
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $^ $(LDFLAGS) -o $@ 
+	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cc | $(OBJDIR)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(OBJDIR):
 	mkdir -p $@
@@ -46,3 +60,7 @@ clean:
 distclean:
 	rm -rf $(OBJDIR)
 
+-include $(DEPS)
+
+.PRECIOUS: $(DEPS)
+.PHONY: clean all
