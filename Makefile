@@ -4,9 +4,6 @@ CLANG_SYSROOT?= /usr/lib/llvm-8
 CLANG_LIBDIR= $(CLANG_SYSROOT)/lib
 CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.a)))
 
-OBJDIR= build
-SRCDIR= src
-
 SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
 DEPS= $(OBJS:.o=.d)
@@ -29,13 +26,18 @@ ifeq ($(BUILD_TYPE),release)
 CFLAGS+= -O3
 else ifeq ($(BUILD_TYPE),debug)
 CFLAGS+= -O0 -g
+TARGET:= $(TARGET)-debug
 else
 $(error "Invalid build type")
 endif
 
-all: $(TARGET)
+BUILDDIR= build
+OBJDIR= $(BUILDDIR)/$(BUILD_TYPE)
+SRCDIR= src
 
-$(TARGET): $(OBJS)
+all: $(BUILDDIR)/$(TARGET)
+
+$(BUILDDIR)/$(TARGET): $(OBJS)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cc | $(OBJDIR)
@@ -48,7 +50,7 @@ clean:
 	rm -f $(OBJS)
 
 distclean:
-	rm -rf $(OBJDIR)
+	rm -rf $(BUILDDIR)
 
 -include $(DEPS)
 
