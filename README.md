@@ -13,10 +13,11 @@ In order to build SpyC, you need to install first:
  * GNU/make
  * C++ compiler (`clang++` recommended)
  * LLVM and clang development libraries (version `8.0`)
+ * libraries: ncurses, zlib
 
 On Ubuntu 19.04 run:
 ```bash
-$ sudo apt install build-essential make clang-8 libclang-8-dev llvm-8-dev
+$ sudo apt install build-essential make clang-8 libclang-8-dev llvm-8-dev ncurses-dev libz-dev
 ```
 
 ### Building with make

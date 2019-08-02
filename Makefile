@@ -3,6 +3,7 @@ TARGET= spyc
 CLANG_SYSROOT?= /usr/lib/llvm-8
 CLANG_LIBDIR= $(CLANG_SYSROOT)/lib
 CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.a)))
+LLVM_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libLLVM*.a)))
 
 SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
@@ -10,10 +11,22 @@ DEPS= $(OBJS:.o=.d)
 
 CXX?= clang++
 CFLAGS+= -Wall -Werror
+CFLAGS+= -pthread
+CFLAGS+= -I $(CLANG_SYSROOT)/include
 CPPFLAGS+= -MMD -MP -MT $@ -MT $(@:.o=.d) -MF $(@:.o=.d)
-CXXFLAGS+= -I $(CLANG_SYSROOT)/include
+CXXFLAGS+= -fno-rtti
 LDFLAGS+= -L $(CLANG_LIBDIR)
-LDFLAGS+= -Wl,--start-group $(CLANG_LIBS) -Wl,--end-group -lLLVM
+
+# scan clang and LLVM libraries
+define scan-libs
+$(1)_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/lib$(1)*.a)))
+LDFLAGS+= -Wl,--start-group $$($(1)_LIBS) -Wl,--end-group
+endef
+$(eval $(call scan-libs,clang))
+$(eval $(call scan-libs,LLVM))
+
+# add LLVM dependencies
+LDFLAGS+= -pthread -lncurses -lz
 
 # g++ breaks build because of warnings caused by LLVM header files
 ifeq ($(CXX),g++)
