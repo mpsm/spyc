@@ -14,6 +14,7 @@
 #include "CodeConsumer.hh"
 #include "CodeModel.hh"
 #include "DotOutputter.hh"
+#include "gitversion.hh"
 
 class SpycFrontendAction : public clang::ASTFrontendAction {
 public:
@@ -45,7 +46,11 @@ static llvm::cl::OptionCategory category("SpyC");
 void printVersion(llvm::raw_ostream &os)
 {
     static const std::string version = "0.0.1";
-    os << "  SpyC version: " << version << "\n";
+    os << "  SpyC version: " << version;
+    if (spyc::gitversion != nullptr) {
+        os << "." << spyc::gitversion;
+    }
+    os << "\n";
 }
 
 int main(int argc, const char **argv)

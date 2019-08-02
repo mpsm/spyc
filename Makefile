@@ -7,6 +7,7 @@ LLVM_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libLLVM*.a)
 
 SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
+OBJS+= $(OBJDIR)/gitversion.o
 DEPS= $(OBJS:.o=.d)
 
 CXX?= clang++
@@ -58,6 +59,15 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cc | $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $@
+
+
+ifneq ($(wildcard ./.git/index),)
+$(SRCDIR)/gitversion.cc: .git/HEAD .git/index $(addprefix $(SRCDIR)/,$(SRCS)) Makefile
+	echo "namespace spyc{const char *gitversion = \"$(shell git rev-parse --short HEAD)$(shell git diff --quiet || echo '-dirty')\";}" > $@
+else
+$(SRCDIR)/gitversion.cc:
+	echo "namespace spyc{const char *gitversion = nullptr;}" > $@
+endif
 
 clean:
 	rm -f $(OBJS)
