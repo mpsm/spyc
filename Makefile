@@ -25,13 +25,17 @@ SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
 DEPS= $(OBJS:.o=.d)
 
-# g++ breaks build because of warnings caused by LLVM header files
-CXX= clang++
+CXX?= clang++
 CFLAGS+= -Wall -Werror
 CPPFLAGS+= -MMD -MP -MT $@ -MT $(@:.o=.d) -MF $(@:.o=.d)
 CXXFLAGS+= -I $(CLANG_SYSROOT)/include
 LDFLAGS+= -L $(CLANG_SYSROOT)/lib
 LDFLAGS+= -Wl,--start-group $(CLANG_LIBS) -Wl,--end-group -lLLVM
+
+# g++ breaks build because of warnings caused by LLVM header files
+ifeq ($(CXX),g++)
+CFLAGS+= -Wno-comment -Wno-strict-aliasing
+endif
 
 # setup build type
 BUILD_TYPE?= release
