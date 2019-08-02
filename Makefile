@@ -67,4 +67,4 @@ distclean:
 -include $(DEPS)
 
 .PRECIOUS: $(DEPS)
-.PHONY: clean all
+.PHONY: distclean clean all
