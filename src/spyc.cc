@@ -9,6 +9,7 @@
 #include <llvm/Support/ManagedStatic.h>
 
 #include <iostream>
+#include <string>
 
 #include "CodeConsumer.hh"
 #include "CodeModel.hh"
@@ -41,6 +42,12 @@ private:
 
 static llvm::cl::OptionCategory category("SpyC");
 
+void printVersion(llvm::raw_ostream &os)
+{
+    static const std::string version = "0.0.1";
+    os << "  SpyC version: " << version << "\n";
+}
+
 int main(int argc, const char **argv)
 {
     int err;
@@ -48,6 +55,7 @@ int main(int argc, const char **argv)
 
     spyc::CodeModel model;
 
+    llvm::cl::AddExtraVersionPrinter(printVersion);
     clang::tooling::CommonOptionsParser optionParser(argc, argv, category);
     clang::tooling::ClangTool tool(optionParser.getCompilations(), optionParser.getSourcePathList());
 
