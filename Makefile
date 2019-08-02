@@ -1,22 +1,8 @@
 TARGET= spyc
 
-CLANG_LIBS= -lclangAnalysis -lclangApplyReplacements -lclangARCMigrate -lclangAST \
-	    -lclangASTMatchers -lclangBasic -lclangChangeNamespace -lclangCodeGen \
-	    -lclangCrossTU -lclangDaemon -lclangDoc -lclangDriver -lclangDynamicASTMatchers \
-	    -lclangEdit -lclangFormat -lclangFrontend -lclangFrontendTool -lclangHandleCXX \
-	    -lclangHandleLLVM -lclangIncludeFixer -lclangIncludeFixerPlugin -lclangIndex \
-	    -lclangLex -lclangMove -lclangParse -lclangQuery -lclangReorderFields \
-	    -lclangRewrite -lclangRewriteFrontend -lclangSema -lclangSerialization \
-	    -lclangStaticAnalyzerCheckers -lclangStaticAnalyzerCore -lclangStaticAnalyzerFrontend \
-	    -lclangTidy -lclangTidyAbseilModule -lclangTidyAndroidModule -lclangTidyBoostModule \
-	    -lclangTidyBugproneModule -lclangTidyCERTModule -lclangTidyCppCoreGuidelinesModule \
-	    -lclangTidyFuchsiaModule -lclangTidyGoogleModule -lclangTidyHICPPModule \
-	    -lclangTidyLLVMModule -lclangTidyMiscModule -lclangTidyModernizeModule \
-	    -lclangTidyMPIModule -lclangTidyObjCModule -lclangTidyPerformanceModule \
-	    -lclangTidyPlugin -lclangTidyPortabilityModule -lclangTidyReadabilityModule \
-	    -lclangTidyUtils -lclangTidyZirconModule -lclangTooling -lclangToolingASTDiff \
-	    -lclangToolingCore -lclangToolingInclusions -lclangToolingRefactor
 CLANG_SYSROOT?= /usr/lib/llvm-8
+CLANG_LIBDIR= $(CLANG_SYSROOT)/lib
+CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.a)))
 
 OBJDIR= build
 SRCDIR= src
@@ -29,7 +15,7 @@ CXX?= clang++
 CFLAGS+= -Wall -Werror
 CPPFLAGS+= -MMD -MP -MT $@ -MT $(@:.o=.d) -MF $(@:.o=.d)
 CXXFLAGS+= -I $(CLANG_SYSROOT)/include
-LDFLAGS+= -L $(CLANG_SYSROOT)/lib
+LDFLAGS+= -L $(CLANG_LIBDIR)
 LDFLAGS+= -Wl,--start-group $(CLANG_LIBS) -Wl,--end-group -lLLVM
 
 # g++ breaks build because of warnings caused by LLVM header files
