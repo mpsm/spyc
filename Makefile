@@ -1,17 +1,35 @@
-TARGET= spyc
-
 CLANG_SYSROOT?= /usr/lib/llvm-8
 CLANG_LIBDIR= $(CLANG_SYSROOT)/lib
 CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.a)))
 LLVM_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libLLVM*.a)))
 
 SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
+BUILDDIR= build
+
+# g++ breaks build because of warnings caused by LLVM header files
+CXX?= clang++
+CFLAGS+= -Wall -Werror
+ifeq ($(CXX),g++)
+CFLAGS+= -Wno-comment -Wno-strict-aliasing
+endif
+
 OBJS= $(addprefix $(OBJDIR)/, $(SRCS:.cc=.o))
 OBJS+= $(OBJDIR)/gitversion.o
 DEPS= $(OBJS:.o=.d)
+TARGET= spyc
 
-CXX?= clang++
-CFLAGS+= -Wall -Werror
+TEST_BUILDDIR= $(BUILDDIR)/test
+TESTDIR= test
+TEST_SRCS= test.cc CodeModel.cc DotOutputter.cc Method.cc
+TEST_OBJS= $(addprefix $(TEST_BUILDDIR)/, $(TEST_SRCS:.cc=.o))
+TEST_DEPS= $(TEST_OBJS:.o=.d)
+TEST_COVFILES= $(TEST_OBJS:.o=.gcda) $(TEST_OBJS:.o=.gcno)
+TEST_TARGET= testall
+TEST_CFLAGS= -g -O0 -coverage
+TEST_LDFLAGS= -lgtest --coverage
+TEST_COVINFO= $(TEST_BUILDDIR)/coverage.info
+TEST_COVHTML= $(BUILDDIR)/coverage
+
 CFLAGS+= -pthread
 CFLAGS+= -I $(CLANG_SYSROOT)/include
 CPPFLAGS+= -MMD -MP -MT $@ -MT $(@:.o=.d) -MF $(@:.o=.d)
@@ -29,37 +47,39 @@ $(eval $(call scan-libs,LLVM))
 # add LLVM dependencies
 LDFLAGS+= -pthread -lncurses -lz
 
-# g++ breaks build because of warnings caused by LLVM header files
-ifeq ($(CXX),g++)
-CFLAGS+= -Wno-comment -Wno-strict-aliasing
-endif
-
 # setup build type
 BUILD_TYPE?= release
 ifeq ($(BUILD_TYPE),release)
-CFLAGS+= -O3
+BT_CFLAGS+= -O3
 else ifeq ($(BUILD_TYPE),debug)
-CFLAGS+= -O0 -g
+BT_CFLAGS+= -O0 -g
 TARGET:= $(TARGET)-debug
 else
 $(error "Invalid build type")
 endif
 
-BUILDDIR= build
 OBJDIR= $(BUILDDIR)/$(BUILD_TYPE)
 SRCDIR= src
 
-all: $(BUILDDIR)/$(TARGET)
+all: coverage $(BUILDDIR)/$(TARGET)
 
-$(BUILDDIR)/$(TARGET): $(OBJS)
+$(BUILDDIR)/$(TARGET): $(OBJS) | $(BUILDDIR)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
+$(BUILDDIR)/$(TEST_TARGET): $(TEST_OBJS) | $(BUILDDIR)
+	$(CXX) $^ $(LDFLAGS) $(TEST_LDFLAGS) -o $@
+
 $(OBJDIR)/%.o: $(SRCDIR)/%.cc | $(OBJDIR)
-	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(BT_CFLAGS) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(OBJDIR):
+$(TEST_BUILDDIR)/%.o: $(SRCDIR)/%.cc | $(TEST_BUILDDIR)
+	$(CXX) $(CPPFLAGS) $(TEST_CFLAGS) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(TEST_BUILDDIR)/%.o: $(TESTDIR)/%.cc | $(TEST_BUILDDIR)
+	$(CXX) $(CPPFLAGS) $(TEST_CFLAGS) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILDDIR) $(OBJDIR) $(TEST_BUILDDIR):
 	mkdir -p $@
-
 
 ifneq ($(wildcard ./.git/index),)
 $(SRCDIR)/gitversion.cc: .git/HEAD .git/index $(addprefix $(SRCDIR)/,$(SRCS)) Makefile
@@ -75,7 +95,20 @@ clean:
 distclean:
 	rm -rf $(BUILDDIR)
 
+coverage: $(TEST_COVHTML)
+
+$(TEST_COVHTML): $(TEST_COVINFO)
+	genhtml $< --output-directory $@
+
+$(TEST_COVINFO): test
+	lcov --capture --no-external --directory $(TEST_BUILDDIR) --base-directory . --output $@
+	lcov --remove $@ -o $@ $(shell realpath $(TESTDIR))/*
+
+test: $(BUILDDIR)/$(TEST_TARGET) | $(BUILDDIR)
+	./$<
+
 -include $(DEPS)
+-include $(TEST_DEPS)
 
 .PRECIOUS: $(DEPS)
-.PHONY: distclean clean all
+.PHONY: test distclean coverage clean all
