@@ -3,7 +3,11 @@ CLANG_LIBDIR= $(CLANG_SYSROOT)/lib
 CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.a)))
 LLVM_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libLLVM*.a)))
 
-SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc spyc.cc
+# setup sources
+SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc
+TEST_SRCS:= test.cc $(SRCS)
+SRCS+= spyc.cc
+
 BUILDDIR= build
 
 # g++ breaks build because of warnings caused by LLVM header files
@@ -20,12 +24,14 @@ TARGET= spyc
 
 TEST_BUILDDIR= $(BUILDDIR)/test
 TESTDIR= test
-TEST_SRCS= test.cc CodeModel.cc DotOutputter.cc Method.cc
+
+TEST_SRCS+= $(notdir $(wildcard $(TESTDIR)/*_test.cc))
 TEST_OBJS= $(addprefix $(TEST_BUILDDIR)/, $(TEST_SRCS:.cc=.o))
 TEST_DEPS= $(TEST_OBJS:.o=.d)
 TEST_COVFILES= $(TEST_OBJS:.o=.gcda) $(TEST_OBJS:.o=.gcno)
 TEST_TARGET= testall
 TEST_CFLAGS= -g -O0 -coverage
+TEST_CFLAGS+= -I $(SRCDIR)
 TEST_LDFLAGS= -lgtest --coverage
 TEST_COVINFO= $(TEST_BUILDDIR)/coverage.info
 TEST_COVHTML= $(BUILDDIR)/coverage
@@ -101,8 +107,8 @@ $(TEST_COVHTML): $(TEST_COVINFO)
 	genhtml $< --output-directory $@
 
 $(TEST_COVINFO): test
-	lcov --capture --no-external --directory $(TEST_BUILDDIR) --base-directory . --output $@
-	lcov --remove $@ -o $@ $(shell realpath $(TESTDIR))/*
+	lcov -q --capture --no-external --directory $(TEST_BUILDDIR) --base-directory . --output $@
+	lcov -q --remove $@ -o $@ $(shell realpath $(TESTDIR))/*
 
 test: $(BUILDDIR)/$(TEST_TARGET) | $(BUILDDIR)
 	./$<
