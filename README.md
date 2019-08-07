@@ -34,6 +34,19 @@ Following environmental variables changes `make` default behavior:
  * `BUILD_TYPE=debug` - build development version (`build/spyc-debug`)
  * `CLANG_SYSROOT` - change clang installation root directory to build against custom clang version
 
+### Build targets
+
+Following phony targets are available:
+ * `clean` - remove build objects
+ * `distclean` - delete all artifacts (remove build directory)
+ * `test` - run unit tests
+ * `coverage` - generate coverage report
+ * `all` - build everything
+
+### Known issues with build system
+
+When building with clang, `lcov` will fail to generate coverage report because it expects different format of data emitted by a compiler.
+
 ## Running
 
 SpyC uses same invocation like other LLVM tools. Basic usage:
