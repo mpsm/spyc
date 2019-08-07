@@ -17,9 +17,14 @@ const string& Method::getName() const
     return _name;
 }
 
-bool Method::operator==(const Method& method)
+bool Method::operator==(const Method& method) const
 {
     return this->_name == method._name;
+}
+
+bool Method::operator!=(const Method& method) const
+{
+    return !(this->operator==(method));
 }
 
 const Method::methodlist& Method::getCallers() const

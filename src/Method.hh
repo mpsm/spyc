@@ -18,7 +18,8 @@ namespace spyc {
         const methodlist& getCallers() const;
         const methodlist& getCallees() const;
 
-        bool operator==(const Method& method);
+        bool operator==(const Method& method) const;
+        bool operator!=(const Method& method) const;
 
         friend void linkMethods(std::shared_ptr<Method> caller, std::shared_ptr<Method> callee);
 
