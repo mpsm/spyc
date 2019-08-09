@@ -46,3 +46,11 @@ TEST (MethodTest, DoubleLink)
     EXPECT_EQ(sm1->getCallees().size(), 1);
     EXPECT_EQ(sm1->getCallers().size(), 0);
 }
+
+TEST (MethodTest, SimpleConstruct)
+{
+    auto m = spyc::Method("name");
+
+    EXPECT_EQ(m.getName(), "name");
+    EXPECT_EQ(m.getFileName(), "");
+}

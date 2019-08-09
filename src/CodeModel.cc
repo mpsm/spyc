@@ -11,25 +11,15 @@ const CodeModel::funcmap& CodeModel::getFunctions() const
     return functions;
 }
 
-std::shared_ptr<Method> CodeModel::createFunction(const std::string& name)
+std::shared_ptr<Method> CodeModel::getMethod(Method::ID id)
 {
-    auto f = getFunctionByName(name);
+    auto fi = functions.find(id);
 
-    if (f == nullptr) {
-        f = std::make_shared<Method>(name);
-        functions.insert({name, f});
+    if (fi == functions.end()) {
+        auto newf = std::make_shared<Method>(id);
+        functions.insert({id, newf});
+        return newf;
     }
 
-    return f;
-}
-
-std::shared_ptr<Method> CodeModel::getFunctionByName(const std::string& name)
-{
-    auto f = functions.find(name);
-    if (f == functions.end()) {
-        return nullptr;
-    }
-    else {
-        return f->second;
-    }
+    return fi->second;
 }

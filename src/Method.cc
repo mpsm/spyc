@@ -7,19 +7,29 @@
 using std::string;
 using namespace spyc;
 
-Method::Method(const string& name) : _name(name)
+Method::Method(const string& name) : Method(Method::ID(name, ""))
+{
+
+}
+
+Method::Method(const ID& methodId) : id{methodId}
 {
 
 }
 
 const string& Method::getName() const
 {
-    return _name;
+    return id.first;
+}
+
+const std::string& Method::getFileName() const
+{
+    return id.second;
 }
 
 bool Method::operator==(const Method& method) const
 {
-    return this->_name == method._name;
+    return this->id == method.id;
 }
 
 bool Method::operator!=(const Method& method) const

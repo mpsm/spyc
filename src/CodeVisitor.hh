@@ -21,7 +21,7 @@ namespace spyc {
         bool VisitFunctionDecl(clang::FunctionDecl *fd);
 
     private:
-        void useFunctionDecl(clang::FunctionDecl *fd);
+        Method::ID getFuncDeclID(clang::FunctionDecl *decl);
 
         clang::ASTContext *ctx;
         CodeModel& _model;
