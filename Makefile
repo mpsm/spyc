@@ -40,6 +40,7 @@ CFLAGS+= -pthread
 CFLAGS+= -I $(CLANG_SYSROOT)/include
 CPPFLAGS+= -MMD -MP -MT $@ -MT $(@:.o=.d) -MF $(@:.o=.d)
 CXXFLAGS+= -fno-rtti
+CXXFLAGS+= -std=c++17
 LDFLAGS+= -L $(CLANG_LIBDIR)
 
 # scan clang and LLVM libraries
