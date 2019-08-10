@@ -68,7 +68,9 @@ endif
 OBJDIR= $(BUILDDIR)/$(BUILD_TYPE)
 SRCDIR= src
 
-all: coverage $(BUILDDIR)/$(TARGET)
+all: coverage app
+
+app: $(BUILDDIR)/$(TARGET)
 
 $(BUILDDIR)/$(TARGET): $(OBJS) | $(BUILDDIR)
 	$(CXX) $^ $(LDFLAGS) -o $@
@@ -118,4 +120,4 @@ test: $(BUILDDIR)/$(TEST_TARGET) | $(BUILDDIR)
 -include $(TEST_DEPS)
 
 .PRECIOUS: $(DEPS)
-.PHONY: test distclean coverage clean all
+.PHONY: all app clean coverage distclean test

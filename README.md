@@ -37,6 +37,7 @@ Following environmental variables changes `make` default behavior:
 ### Build targets
 
 Following phony targets are available:
+ * `app` - build SpyC application
  * `clean` - remove build objects
  * `distclean` - delete all artifacts (remove build directory)
  * `test` - run unit tests
