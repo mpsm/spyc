@@ -4,7 +4,7 @@ CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.
 LLVM_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libLLVM*.a)))
 
 # setup sources
-SRCS= CodeModel.cc CodeVisitor.cc DotOutputter.cc Method.cc
+SRCS= CodeModel.cc CodeVisitor.cc Method.cc
 TEST_SRCS:= test.cc $(SRCS)
 SRCS+= spyc.cc
 

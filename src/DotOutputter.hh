@@ -1,19 +1,34 @@
 #ifndef __SPYC_DOTOUTPUTTER_H__
 #define __SPYC_DOTOUTPUTTER_H__
 
-#include "CodeModel.hh"
-
 #include <iostream>
-
 namespace spyc {
 
     class DotOutputter {
     public:
-        DotOutputter(const CodeModel& model);
-        void outputCallGraph(std::ostream& os);
+        DotOutputter() = delete;
+        DotOutputter(std::ostream& outputStream) : os(outputStream) {};
+
+        template <typename T> void outputCallGraph(std::ostream& os, const T& range) const
+        {
+            os << "digraph callgraph {" << std::endl;
+
+            for (auto fp : range) {
+                auto f = fp.second;
+                auto fname = f->getName();
+
+                os << "\t// " << fname << std::endl;
+                for (auto weak_callee : f->getCallees()) {
+                    auto callee = weak_callee.lock();
+                    os << "\t" << fname << " -> " << callee->getName() << ";" << std::endl;
+                }
+            }
+
+            os << "}" << std::endl;
+        }
 
     private:
-        const CodeModel &_model;
+        const std::ostream& os;
     };
 
 }
