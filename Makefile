@@ -68,6 +68,9 @@ endif
 OBJDIR= $(BUILDDIR)/$(BUILD_TYPE)
 SRCDIR= src
 
+# export all variables to submake
+export
+
 all: coverage app
 
 app: $(BUILDDIR)/$(TARGET)
@@ -102,6 +105,7 @@ clean:
 	rm -f $(OBJS)
 
 distclean:
+	rm -f compile_commands.json
 	rm -rf $(BUILDDIR)
 
 coverage: $(TEST_COVHTML)
@@ -115,6 +119,10 @@ $(TEST_COVINFO): test
 
 test: $(BUILDDIR)/$(TEST_TARGET) | $(BUILDDIR)
 	./$<
+
+compile_commands.json: Makefile
+	$(MAKE) distclean
+	compiledb $(MAKE) -j -r -R -k BUILD_TYPE=debug $(BUILDDIR)/$(TEST_TARGET) app
 
 -include $(DEPS)
 -include $(TEST_DEPS)
