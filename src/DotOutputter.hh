@@ -9,7 +9,7 @@ namespace spyc {
         DotOutputter() = delete;
         DotOutputter(std::ostream& outputStream) : os(outputStream) {};
 
-        template <typename T> void outputCallGraph(std::ostream& os, const T& range) const
+        template <typename T> void outputCallGraph(const T& range) const
         {
             os << "digraph callgraph {" << std::endl;
 
@@ -28,7 +28,7 @@ namespace spyc {
         }
 
     private:
-        const std::ostream& os;
+        std::ostream& os;
     };
 
 }

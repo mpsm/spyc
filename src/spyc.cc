@@ -46,7 +46,7 @@ int main(int argc, const char **argv)
 
     {
         spyc::DotOutputter outputter{std::cout};
-        outputter.outputCallGraph(std::cout, model.getFunctions());
+        outputter.outputCallGraph(model.getFunctions());
     }
 
     return 0;
