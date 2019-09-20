@@ -16,17 +16,20 @@ namespace spyc {
 
     class SpycFrontendAction : public clang::ASTFrontendAction {
     public:
-        explicit SpycFrontendAction(spyc::CodeModel& model)
-            : _model(model) {}
+        explicit SpycFrontendAction(spyc::CodeModel& model) : _model(model) {}
 
-        virtual std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile) {
-            return std::unique_ptr<clang::ASTConsumer>(new spyc::CodeConsumer(&Compiler.getASTContext(), _model));
+        virtual std::unique_ptr<clang::ASTConsumer>
+        CreateASTConsumer(
+            clang::CompilerInstance& Compiler, llvm::StringRef InFile)
+        {
+            return std::unique_ptr<clang::ASTConsumer>(
+                new spyc::CodeConsumer(&Compiler.getASTContext(), _model));
         }
 
     private:
         spyc::CodeModel& _model;
     };
 
-}
+} // namespace spyc
 
 #endif /* __SPYC_SPYCFRONTENDACTION_HH__ */

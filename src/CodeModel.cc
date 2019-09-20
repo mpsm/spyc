@@ -6,12 +6,14 @@
 
 using namespace spyc;
 
-const CodeModel::funcmap& CodeModel::getFunctions() const
+const CodeModel::funcmap&
+CodeModel::getFunctions() const
 {
     return functions;
 }
 
-std::shared_ptr<Method> CodeModel::getMethod(Method::ID id)
+std::shared_ptr<Method>
+CodeModel::getMethod(Method::ID id)
 {
     auto fi = functions.find(id);
 

@@ -3,7 +3,7 @@
 #include "CodeModel.hh"
 #include "Method.hh"
 
-TEST (CodeModelTest, CreateUnique)
+TEST(CodeModelTest, CreateUnique)
 {
     spyc::CodeModel cm;
 

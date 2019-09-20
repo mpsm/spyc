@@ -1,0 +1,15 @@
+BasedOnStyle: LLVM
+
+IndentWidth: 4
+IndentPPDirectives: AfterHash
+NamespaceIndentation: All
+
+AccessModifierOffset: -4
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: Empty
+AlignAfterOpenBracket: DontAlign
+
+AlwaysBreakAfterDefinitionReturnType: All
+BreakBeforeBraces: Custom
+BraceWrapping:
+    AfterFunction: true

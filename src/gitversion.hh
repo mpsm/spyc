@@ -4,7 +4,7 @@
 #include <string>
 
 namespace spyc {
-    extern const char *gitversion;
+    extern const char* gitversion;
 }
 
 #endif /* __SPYC_GITVERSION_HH__ */

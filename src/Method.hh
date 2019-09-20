@@ -7,12 +7,12 @@
 #include <utility>
 
 namespace spyc {
-    
-    class Method {    
+
+    class Method {
     public:
         using methodlist = std::list<std::weak_ptr<Method>>;
         using ID = std::pair<std::string, std::string>;
-    
+
         Method(const std::string& name);
         Method(const ID& methodId);
         Method(void) = delete;
@@ -25,7 +25,8 @@ namespace spyc {
         bool operator==(const Method& method) const;
         bool operator!=(const Method& method) const;
 
-        friend void linkMethods(std::shared_ptr<Method> caller, std::shared_ptr<Method> callee);
+        friend void linkMethods(
+            std::shared_ptr<Method> caller, std::shared_ptr<Method> callee);
 
     private:
         void addCaller(std::shared_ptr<Method> m);
@@ -37,8 +38,9 @@ namespace spyc {
         ID id;
     };
 
-    void linkMethods(std::shared_ptr<Method> caller, std::shared_ptr<Method> callee);
+    void linkMethods(
+        std::shared_ptr<Method> caller, std::shared_ptr<Method> callee);
 
-}
+} // namespace spyc
 
 #endif /* __SPYC_METHOD_HH__ */

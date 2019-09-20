@@ -8,8 +8,7 @@
 
 namespace spyc::utils {
 
-    template <class Container>
-    class FilteredRange {
+    template <class Container> class FilteredRange {
         using element = typename Container::value_type;
         using predicate = std::function<bool(const element&)>;
         using c_iter = typename Container::const_iterator;
@@ -18,14 +17,20 @@ namespace spyc::utils {
     public:
         FilteredRange() = delete;
         FilteredRange(const Container& c, predicate filter)
-            : container{c}, f(filter), c_begin{std::cbegin(c)},
-            c_end{std::cend(c)} {}
+            : container{c},
+              f(filter), c_begin{std::cbegin(c)}, c_end{std::cend(c)}
+        {
+        }
 
-        f_iter begin() const {
+        f_iter
+        begin() const
+        {
             return boost::make_filter_iterator<predicate>(f, c_begin);
         }
 
-        f_iter end() const {
+        f_iter
+        end() const
+        {
             return boost::make_filter_iterator<predicate>(f, c_end);
         }
 
@@ -37,11 +42,13 @@ namespace spyc::utils {
     };
 
     template <typename T>
-    FilteredRange<T> make_filtered_range(const T& t, std::function<bool(const typename T::value_type&)> f)
+    FilteredRange<T>
+    make_filtered_range(
+        const T& t, std::function<bool(const typename T::value_type&)> f)
     {
         return FilteredRange<T>(t, f);
     }
 
-}
+} // namespace spyc::utils
 
 #endif /* __SPYC_UTILS_HH__ */

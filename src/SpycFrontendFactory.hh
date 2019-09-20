@@ -9,18 +9,24 @@
 
 namespace spyc {
 
-    class SpycFrontendActionFactory : public clang::tooling::FrontendActionFactory {
+    class SpycFrontendActionFactory
+        : public clang::tooling::FrontendActionFactory {
     public:
         explicit SpycFrontendActionFactory(spyc::CodeModel& model)
-            : _model(model) {}
+            : _model(model)
+        {
+        }
 
-        clang::FrontendAction *create() override {
+        clang::FrontendAction*
+        create() override
+        {
             return new SpycFrontendAction(_model);
         }
+
     private:
         spyc::CodeModel& _model;
     };
 
-}
+} // namespace spyc
 
 #endif /* __SPYC_SPYCFRONTENDFACTORY_HH__ */

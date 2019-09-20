@@ -7,9 +7,11 @@ namespace spyc {
     class DotOutputter {
     public:
         DotOutputter() = delete;
-        DotOutputter(std::ostream& outputStream) : os(outputStream) {};
+        DotOutputter(std::ostream& outputStream) : os(outputStream){};
 
-        template <typename T> void outputCallGraph(const T& range) const
+        template <typename T>
+        void
+        outputCallGraph(const T& range) const
         {
             os << "digraph callgraph {" << std::endl;
 
@@ -20,7 +22,8 @@ namespace spyc {
                 os << "\t// " << fname << std::endl;
                 for (auto weak_callee : f->getCallees()) {
                     auto callee = weak_callee.lock();
-                    os << "\t" << fname << " -> " << callee->getName() << ";" << std::endl;
+                    os << "\t" << fname << " -> " << callee->getName() << ";"
+                       << std::endl;
                 }
             }
 
@@ -31,6 +34,6 @@ namespace spyc {
         std::ostream& os;
     };
 
-}
+} // namespace spyc
 
 #endif /* __SPYC_DOTOUTPUTTER_H__ */

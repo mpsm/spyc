@@ -9,15 +9,15 @@
 
 using namespace spyc;
 
-CodeVisitor::CodeVisitor(clang::ASTContext *astContext, CodeModel& model)
+CodeVisitor::CodeVisitor(clang::ASTContext* astContext, CodeModel& model)
     : ctx(astContext), _model(model)
 {
-
 }
 
-bool CodeVisitor::VisitCallExpr(clang::CallExpr *expr)
+bool
+CodeVisitor::VisitCallExpr(clang::CallExpr* expr)
 {
-    clang::FunctionDecl *callee = expr->getDirectCallee();
+    clang::FunctionDecl* callee = expr->getDirectCallee();
 
     if (callee != nullptr) {
         auto f = _model.getMethod(getFuncDeclID(callee));
@@ -27,7 +27,8 @@ bool CodeVisitor::VisitCallExpr(clang::CallExpr *expr)
     return true;
 }
 
-bool CodeVisitor::VisitFunctionDecl(clang::FunctionDecl *fd)
+bool
+CodeVisitor::VisitFunctionDecl(clang::FunctionDecl* fd)
 {
     if (fd->hasBody()) {
         lastCaller = _model.getMethod(getFuncDeclID(fd));
@@ -36,7 +37,8 @@ bool CodeVisitor::VisitFunctionDecl(clang::FunctionDecl *fd)
     return true;
 }
 
-Method::ID CodeVisitor::getFuncDeclID(clang::FunctionDecl *decl)
+Method::ID
+CodeVisitor::getFuncDeclID(clang::FunctionDecl* decl)
 {
     auto& srcmng = ctx->getSourceManager();
     auto filename = srcmng.getFilename(decl->getBeginLoc()).str();

@@ -17,7 +17,8 @@
 
 static llvm::cl::OptionCategory category("SpyC");
 
-static void printVersion(llvm::raw_ostream &os)
+static void
+printVersion(llvm::raw_ostream& os)
 {
     static const std::string version = "0.0.1";
     os << "  SpyC version: " << version;
@@ -27,7 +28,8 @@ static void printVersion(llvm::raw_ostream &os)
     os << "\n";
 }
 
-int main(int argc, const char **argv)
+int
+main(int argc, const char** argv)
 {
     int err;
     llvm::llvm_shutdown_obj llvmCleanup;
@@ -36,9 +38,11 @@ int main(int argc, const char **argv)
 
     llvm::cl::AddExtraVersionPrinter(printVersion);
     clang::tooling::CommonOptionsParser optionParser(argc, argv, category);
-    clang::tooling::ClangTool tool(optionParser.getCompilations(), optionParser.getSourcePathList());
+    clang::tooling::ClangTool tool(
+        optionParser.getCompilations(), optionParser.getSourcePathList());
 
-    err = tool.run(std::make_unique<spyc::SpycFrontendActionFactory>(model).get());
+    err = tool.run(
+        std::make_unique<spyc::SpycFrontendActionFactory>(model).get());
 
     if (err != 0) {
         return err;
