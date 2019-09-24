@@ -34,6 +34,8 @@ jobs:
       - attach_workspace:
           at: build
       - run: "./build/testall"
+      - store_test_results:
+          path: build/test-result.txt
 
 workflows:
   version: 2
