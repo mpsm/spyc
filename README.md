@@ -1,5 +1,7 @@
 # SpyC - another C/C++ static analyzer
 
+[![CircleCI](https://circleci.com/gh/mpsm/spyc.svg?style=shield)](https://circleci.com/gh/mpsm/spyc)
+
 SpyC is an application which main purpose is to help developer
 analyze complex C codebase. Its very first version allows to
 scan C code looking for function definitions and calls and output

@@ -74,6 +74,7 @@ export
 all: coverage app
 
 app: $(BUILDDIR)/$(TARGET)
+testapp: $(BUILDDIR)/$(TEST_TARGET)
 
 $(BUILDDIR)/$(TARGET): $(OBJS) | $(BUILDDIR)
 	$(CXX) $^ $(LDFLAGS) -o $@
@@ -128,4 +129,4 @@ compile_commands.json: Makefile
 -include $(TEST_DEPS)
 
 .PRECIOUS: $(DEPS)
-.PHONY: all app clean coverage distclean test
+.PHONY: all app clean coverage distclean test testapp
