@@ -30,12 +30,12 @@ jobs:
     docker:
       - image: mpsm/spyc-builder
     steps:
-      - checkout
       - attach_workspace:
           at: build
-      - run: "./build/testall"
+      - run: "./build/testall --gtest_output=xml"
+      - run: "mkdir -p test-results/gtest && mv test_detail.xml test-results/gtest/"
       - store_test_results:
-          path: build/test-result.txt
+          path: test-results
 
 workflows:
   version: 2
