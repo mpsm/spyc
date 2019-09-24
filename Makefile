@@ -35,6 +35,7 @@ TEST_CFLAGS+= -I $(SRCDIR)
 TEST_LDFLAGS= -lgtest --coverage
 TEST_COVINFO= $(TEST_BUILDDIR)/coverage.info
 TEST_COVHTML= $(BUILDDIR)/coverage
+TEST_RESULT= $(BUILDDIR)/test-result.txt
 
 CFLAGS+= -pthread
 CFLAGS+= -I $(CLANG_SYSROOT)/include
@@ -118,8 +119,10 @@ $(TEST_COVINFO): test
 	lcov -q --capture --no-external --directory $(TEST_BUILDDIR) --base-directory . --output $@
 	lcov -q --remove $@ -o $@ $(shell realpath $(TESTDIR))/*
 
-test: $(BUILDDIR)/$(TEST_TARGET) | $(BUILDDIR)
-	./$<
+$(TEST_RESULT): $(BUILDDIR)/$(TEST_TARGET) | $(BUILDDIR)
+	./$< | tee $@
+
+test: $(TEST_RESULT)
 
 compile_commands.json: Makefile
 	$(MAKE) distclean
