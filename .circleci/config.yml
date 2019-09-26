@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build-gcc:
     docker:
@@ -30,12 +30,20 @@ jobs:
     docker:
       - image: mpsm/spyc-builder
     steps:
+      - checkout
       - attach_workspace:
           at: build
-      - run: "./build/testall --gtest_output=xml"
+      - run: "find build | xargs touch"
+      - run:
+          name: "Running tests"
+          command: "./build/testall --gtest_output=xml"
       - run: "mkdir -p test-results/gtest && mv test_detail.xml test-results/gtest/"
       - store_test_results:
           path: test-results
+      - run:
+          name: "Uploading coverage report"
+          command: "gcov -r -o build/test src/* test/*; curl -s https://codecov.io/bash | bash -s -- -X gcov -t ${CODECOV_TOKEN} -n ${CIRCLE_BUILD_NUM} -Z || echo \"Codecov upload failed\""
+          when: always
 
 workflows:
   version: 2

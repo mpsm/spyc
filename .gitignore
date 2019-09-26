@@ -3,3 +3,5 @@
 /src/gitversion.cc
 /compile_commands.json
 /.clangd
+/*.gcov
+/test_detail.xml
