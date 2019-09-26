@@ -15,10 +15,10 @@ results as a digraph in dot format.
 ### Prerequisites
 
 In order to build SpyC, you need to install first:
-*  GNU/make
-*  C++ compiler (`clang++` recommended)
-*  LLVM and clang development libraries (version `8.0`)
-*  libraries: ncurses, zlib
+*   GNU/make
+*   C++ compiler (`clang++` recommended)
+*   LLVM and clang development libraries (version `8.0`)
+*   libraries: ncurses, zlib
 
 On Ubuntu 19.04 run:
 ```bash
@@ -36,18 +36,18 @@ It will create `spyc` binary in the `build` subdirectory.
 ### Customizing make
 
 Following environmental variables changes `make` default behavior:
-*  `BUILD_TYPE=debug` - build development version (`build/spyc-debug`)
-*  `CLANG_SYSROOT` - change clang installation root directory to build against custom clang version
+*   `BUILD_TYPE=debug` - build development version (`build/spyc-debug`)
+*   `CLANG_SYSROOT` - change clang installation root directory to build against custom clang version
 
 ### Build targets
 
 Following phony targets are available:
-*  `app` - build SpyC application
-*  `clean` - remove build objects
-*  `distclean` - delete all artifacts (remove build directory)
-*  `test` - run unit tests
-*  `coverage` - generate coverage report
-*  `all` - build everything
+*   `app` - build SpyC application
+*   `clean` - remove build objects
+*   `distclean` - delete all artifacts (remove build directory)
+*   `test` - run unit tests
+*   `coverage` - generate coverage report
+*   `all` - build everything
 
 ### Known issues with build system
 
