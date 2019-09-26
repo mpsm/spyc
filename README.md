@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/mpsm/spyc.svg?style=shield)](https://circleci.com/gh/mpsm/spyc)
 [![codecov](https://codecov.io/gh/mpsm/spyc/branch/master/graph/badge.svg)](https://codecov.io/gh/mpsm/spyc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/62d44bdc41c34f4bb701d27b46ab93f3)](https://www.codacy.com/manual/mpsm/spyc?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mpsm/spyc&amp;utm_campaign=Badge_Grade)
 
 SpyC is an application which main purpose is to help developer
 analyze complex C codebase. Its very first version allows to
@@ -14,10 +15,10 @@ results as a digraph in dot format.
 ### Prerequisites
 
 In order to build SpyC, you need to install first:
-* GNU/make
-* C++ compiler (`clang++` recommended)
-* LLVM and clang development libraries (version `8.0`)
-* libraries: ncurses, zlib
+*  GNU/make
+*  C++ compiler (`clang++` recommended)
+*  LLVM and clang development libraries (version `8.0`)
+*  libraries: ncurses, zlib
 
 On Ubuntu 19.04 run:
 ```bash
@@ -35,18 +36,18 @@ It will create `spyc` binary in the `build` subdirectory.
 ### Customizing make
 
 Following environmental variables changes `make` default behavior:
-* `BUILD_TYPE=debug` - build development version (`build/spyc-debug`)
-* `CLANG_SYSROOT` - change clang installation root directory to build against custom clang version
+*  `BUILD_TYPE=debug` - build development version (`build/spyc-debug`)
+*  `CLANG_SYSROOT` - change clang installation root directory to build against custom clang version
 
 ### Build targets
 
 Following phony targets are available:
-* `app` - build SpyC application
-* `clean` - remove build objects
-* `distclean` - delete all artifacts (remove build directory)
-* `test` - run unit tests
-* `coverage` - generate coverage report
-* `all` - build everything
+*  `app` - build SpyC application
+*  `clean` - remove build objects
+*  `distclean` - delete all artifacts (remove build directory)
+*  `test` - run unit tests
+*  `coverage` - generate coverage report
+*  `all` - build everything
 
 ### Known issues with build system
 
