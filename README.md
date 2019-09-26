@@ -2,6 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/mpsm/spyc.svg?style=shield)](https://circleci.com/gh/mpsm/spyc)
 [![codecov](https://codecov.io/gh/mpsm/spyc/branch/master/graph/badge.svg)](https://codecov.io/gh/mpsm/spyc)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 SpyC is an application which main purpose is to help developer
 analyze complex C codebase. Its very first version allows to
