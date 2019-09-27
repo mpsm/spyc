@@ -69,9 +69,6 @@ endif
 OBJDIR= $(BUILDDIR)/$(BUILD_TYPE)
 SRCDIR= src
 
-# export all variables to submake
-export
-
 all: coverage app
 
 app: $(BUILDDIR)/$(TARGET)
