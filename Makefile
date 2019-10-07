@@ -1,4 +1,5 @@
 CLANG_SYSROOT?= /usr/lib/llvm-8
+GTEST_SYSROOT?= /usr
 CLANG_LIBDIR= $(CLANG_SYSROOT)/lib
 CLANG_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libclang*.a)))
 LLVM_LIBS= $(patsubst lib%.a,-l%,$(notdir $(wildcard $(CLANG_LIBDIR)/libLLVM*.a)))
@@ -13,7 +14,9 @@ BUILDDIR= build
 # g++ breaks build because of warnings caused by LLVM header files
 CXX?= clang++
 CFLAGS+= -Wall -Werror
-ifeq ($(CXX),g++)
+CXXTYPE=$(shell $(CXX) --version | head -n1 | awk '{print $$1}')
+ifeq ($(CXXTYPE),g++)
+GCCVER=$(shell $(CXX) --version | head -n1 | awk '{print $$NF}' | cut -c1)
 CFLAGS+= -Wno-comment -Wno-strict-aliasing
 endif
 
@@ -31,8 +34,12 @@ TEST_DEPS= $(TEST_OBJS:.o=.d)
 TEST_COVFILES= $(TEST_OBJS:.o=.gcda) $(TEST_OBJS:.o=.gcno)
 TEST_TARGET= testall
 TEST_CFLAGS= -g -O0 -coverage
-TEST_CFLAGS+= -I $(SRCDIR)
-TEST_LDFLAGS= -lgtest --coverage
+TEST_CFLAGS+= -I $(SRCDIR) -I $(GTEST_SYSROOT)/include
+TEST_LDFLAGS= -L $(GTEST_SYSROOT)/lib
+TEST_LDFLAGS+= -lgtest -lgmock --coverage
+ifeq ($(GCCVER),8)
+TEST_LDFLAGS+= -lstdc++fs
+endif
 TEST_COVINFO= $(TEST_BUILDDIR)/coverage.info
 TEST_COVHTML= $(BUILDDIR)/coverage
 TEST_RESULT= $(BUILDDIR)/test-result.txt
