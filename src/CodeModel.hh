@@ -14,13 +14,15 @@ namespace spyc {
     class CodeModelInterface {
     public:
         virtual std::shared_ptr<Method> getMethod(Method::ID) = 0;
-        virtual ~CodeModelInterface(){};
+        virtual ~CodeModelInterface() {}
     };
 
     class CodeModel : public CodeModelInterface {
         struct MethodHasher;
 
     public:
+        virtual ~CodeModel() = default;
+
         using funcmap = std::unordered_map<Method::ID, std::shared_ptr<Method>,
             MethodHasher>;
 

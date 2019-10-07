@@ -88,7 +88,7 @@ public:
 };
 
 int
-run_test_tool(MockModel& model, std::string testName)
+run_test_tool(MockModel& model, const std::string& testName)
 {
     DummyCompilationDatabase db;
     clang::tooling::ClangTool tool(db, {"test/testfiles/" + testName + ".c"});

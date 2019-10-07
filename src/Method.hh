@@ -13,8 +13,8 @@ namespace spyc {
         using methodlist = std::list<std::weak_ptr<Method>>;
         using ID = std::pair<std::string, std::string>;
 
-        Method(const std::string& name);
-        Method(const ID& methodId);
+        explicit Method(const std::string& name);
+        explicit Method(const ID& methodId);
         Method(void) = delete;
 
         const std::string& getName() const;

@@ -7,7 +7,7 @@ namespace spyc {
     class DotOutputter {
     public:
         DotOutputter() = delete;
-        DotOutputter(std::ostream& outputStream) : os(outputStream){};
+        explicit DotOutputter(std::ostream& outputStream) : os(outputStream){};
 
         template <typename T>
         void
