@@ -26,10 +26,10 @@ TEST(MethodTest, Link)
 
     spyc::linkMethods(sm1, sm2);
 
-    EXPECT_EQ(sm1->getCallees().size(), 1);
-    EXPECT_EQ(sm1->getCallers().size(), 0);
-    EXPECT_EQ(sm2->getCallees().size(), 0);
-    EXPECT_EQ(sm2->getCallers().size(), 1);
+    EXPECT_EQ(sm1->getCallees().size(), 1U);
+    EXPECT_EQ(sm1->getCallers().size(), 0U);
+    EXPECT_EQ(sm2->getCallees().size(), 0U);
+    EXPECT_EQ(sm2->getCallers().size(), 1U);
 
     EXPECT_EQ((*sm1->getCallees().begin()).lock(), sm2);
     EXPECT_EQ((*sm2->getCallers().begin()).lock(), sm1);
@@ -43,8 +43,8 @@ TEST(MethodTest, DoubleLink)
     spyc::linkMethods(sm1, sm2);
     spyc::linkMethods(sm1, sm2);
 
-    EXPECT_EQ(sm1->getCallees().size(), 1);
-    EXPECT_EQ(sm1->getCallers().size(), 0);
+    EXPECT_EQ(sm1->getCallees().size(), 1U);
+    EXPECT_EQ(sm1->getCallers().size(), 0U);
 }
 
 TEST(MethodTest, SimpleConstruct)

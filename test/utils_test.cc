@@ -14,6 +14,6 @@ TEST(UtilsTest, FilteredRange)
     auto fr =
         spyc::utils::make_filtered_range(v, [](const int& i) { return i > 0; });
     std::copy(std::begin(fr), std::end(fr), std::back_inserter(to));
-    EXPECT_EQ(to.size(), 5);
+    EXPECT_EQ(to.size(), 5U);
     EXPECT_EQ(to, expected);
 }
