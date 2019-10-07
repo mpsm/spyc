@@ -16,7 +16,8 @@ namespace spyc {
 
     class CodeVisitor : public clang::RecursiveASTVisitor<CodeVisitor> {
     public:
-        explicit CodeVisitor(clang::ASTContext* astContext, CodeModel& model);
+        explicit CodeVisitor(
+            clang::ASTContext* astContext, CodeModelInterface& model);
         bool VisitCallExpr(clang::CallExpr* expr);
         bool VisitFunctionDecl(clang::FunctionDecl* fd);
 
@@ -24,7 +25,7 @@ namespace spyc {
         Method::ID getFuncDeclID(clang::FunctionDecl* decl);
 
         clang::ASTContext* ctx;
-        CodeModel& _model;
+        CodeModelInterface& _model;
         std::shared_ptr<Method> lastCaller;
     };
 

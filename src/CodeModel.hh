@@ -11,7 +11,13 @@
 
 namespace spyc {
 
-    class CodeModel {
+    class CodeModelInterface {
+    public:
+        virtual std::shared_ptr<Method> getMethod(Method::ID) = 0;
+        virtual ~CodeModelInterface(){};
+    };
+
+    class CodeModel : public CodeModelInterface {
         struct MethodHasher;
 
     public:

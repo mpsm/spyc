@@ -9,7 +9,8 @@
 
 using namespace spyc;
 
-CodeVisitor::CodeVisitor(clang::ASTContext* astContext, CodeModel& model)
+CodeVisitor::CodeVisitor(
+    clang::ASTContext* astContext, CodeModelInterface& model)
     : ctx(astContext), _model(model)
 {
 }
