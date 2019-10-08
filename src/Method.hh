@@ -19,6 +19,7 @@ namespace spyc {
 
         const std::string& getName() const;
         const std::string& getFileName() const;
+        const ID& getID() const;
         const methodlist& getCallers() const;
         const methodlist& getCallees() const;
 

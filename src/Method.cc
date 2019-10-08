@@ -23,6 +23,12 @@ Method::getFileName() const
     return id.second;
 }
 
+const Method::ID&
+Method::getID() const
+{
+    return this->id;
+}
+
 bool
 Method::operator==(const Method& method) const
 {
