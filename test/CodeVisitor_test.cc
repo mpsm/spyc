@@ -20,6 +20,7 @@
 
 namespace fs = std::filesystem;
 using ::testing::_;
+using ::testing::Return;
 
 class MockModel : public spyc::CodeModelInterface {
 public:
@@ -91,16 +92,50 @@ int
 run_test_tool(MockModel& model, const std::string& testName)
 {
     DummyCompilationDatabase db;
-    clang::tooling::ClangTool tool(db, {"test/testfiles/" + testName + ".c"});
+    clang::tooling::ClangTool tool(db, {testName});
     auto actionFactory = std::make_unique<TestFrontendActionFactory>(model);
     return tool.run(actionFactory.get());
+}
+
+std::string
+get_test_filename(const std::string& name)
+{
+    return fs::absolute("test/testfiles/" + name + ".c");
 }
 
 TEST(CodeVisitorTest, OneDef)
 {
     MockModel model;
+    std::string filename = get_test_filename("onedef");
 
-    EXPECT_CALL(model, getMethod(_)).Times(1);
+    EXPECT_CALL(model, getMethod(spyc::Method::ID("foo", filename))).Times(1);
 
-    ASSERT_EQ(run_test_tool(model, "onedef"), 0);
+    ASSERT_EQ(run_test_tool(model, filename), 0);
+}
+
+TEST(CodeVisitorTest, OneCall)
+{
+    MockModel model;
+    std::string filename = get_test_filename("onecall");
+    auto foo =
+        std::make_shared<spyc::Method>(spyc::Method::ID{"foo", filename});
+    auto bar =
+        std::make_shared<spyc::Method>(spyc::Method::ID{"bar", filename});
+
+    EXPECT_CALL(model, getMethod(bar->getID())).WillOnce(Return(bar));
+    EXPECT_CALL(model, getMethod(foo->getID())).WillOnce(Return(foo));
+
+    ASSERT_EQ(run_test_tool(model, filename), 0);
+
+    ASSERT_EQ(foo->getCallees().size(), 1U);
+    ASSERT_EQ(bar->getCallers().size(), 1U);
+
+    ASSERT_EQ(foo->getCallers().size(), 0U);
+    ASSERT_EQ(bar->getCallees().size(), 0U);
+
+    auto callee = foo->getCallees().begin()->lock();
+    auto caller = bar->getCallers().begin()->lock();
+
+    ASSERT_EQ(callee, bar);
+    ASSERT_EQ(caller, foo);
 }
