@@ -1,4 +1,5 @@
 /build
+/build-*
 /.vscode
 /src/gitversion.cc
 /compile_commands.json
