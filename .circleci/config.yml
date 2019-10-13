@@ -5,21 +5,24 @@ jobs:
       - image: mpsm/spyc-builder
     steps:
       - checkout
-      - run: "make -j -r -R CXX=g++ app"
+      - run: "cmake -G Ninja -B build -S . -DClang_HINT=${CLANG_SYSROOT}"
+      - run: "ninja -C build spyc"
 
   build-clang:
     docker:
       - image: mpsm/spyc-builder
     steps:
       - checkout
-      - run: "make -j -r -R CXX=${CLANG_SYSROOT}/bin/clang++ app"
+      - run: "CXX=${CLANG_SYSROOT}/bin/clang++ cmake -G Ninja -B build -S . -DClang_HINT=${CLANG_SYSROOT}"
+      - run: "ninja -C build spyc"
 
   build-tests:
     docker:
       - image: mpsm/spyc-builder
     steps:
       - checkout
-      - run: "make -j -r -R CXX=g++ testapp"
+      - run: "cmake -G Ninja -B build -S . -DClang_HINT=${CLANG_SYSROOT} -D GTest_HINT=${GTEST_SYSROOT} -DSPYC_TESTS=ON -DCMAKE_BUILD_TYPE=Debug"
+      - run: "ninja -C build testall"
       - persist_to_workspace:
           root: build
           paths:
@@ -36,13 +39,13 @@ jobs:
       - run: "find build | xargs touch"
       - run:
           name: "Running tests"
-          command: "./build/testall --gtest_output=xml"
+          command: "./build/test/testall --gtest_output=xml"
       - run: "mkdir -p test-results/gtest && mv test_detail.xml test-results/gtest/"
       - store_test_results:
           path: test-results
       - run:
           name: "Uploading coverage report"
-          command: "gcov -r -o build/test src/* test/*; curl -s https://codecov.io/bash | bash -s -- -X gcov -t ${CODECOV_TOKEN} -n ${CIRCLE_BUILD_NUM} -Z || echo \"Codecov upload failed\""
+          command: "./devtools/covpaths.sh build && gcov -r -o build-coverage src/* test/*; curl -s https://codecov.io/bash | bash -s -- -X gcov -t ${CODECOV_TOKEN} -n ${CIRCLE_BUILD_NUM} -Z || echo \"Codecov upload failed\""
           when: always
 
 workflows:

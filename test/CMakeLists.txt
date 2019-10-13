@@ -28,7 +28,7 @@ target_include_directories(testall PUBLIC GTest::gtest GTest::gmock)
 target_link_libraries(testall GTest::gtest GTest::gmock)
 
 # generate coverage information
-if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_compile_options(testall PUBLIC -coverage)
     target_link_libraries(testall -lgcov)
