@@ -45,7 +45,7 @@ jobs:
           path: test-results
       - run:
           name: "Uploading coverage report"
-          command: "./devtools/covpaths.sh build && gcov -r -o build-coverage src/* test/*; curl -s https://codecov.io/bash | bash -s -- -X gcov -t ${CODECOV_TOKEN} -n ${CIRCLE_BUILD_NUM} -Z || echo \"Codecov upload failed\""
+          command: "gcovr -x -o coverage.xml; curl -s https://codecov.io/bash | bash -s -- -f coverage.xml -t ${CODECOV_TOKEN} -n ${CIRCLE_BUILD_NUM} -Z || echo \"Codecov upload failed\""
           when: always
 
 workflows:
