@@ -23,8 +23,7 @@ target_include_directories(testall PUBLIC ../src)
 find_package(GTest 1.10 CONFIG REQUIRED HINTS ${GTest_HINT})
 message(STATUS "Using GTest installation: ${GTest_DIR}")
 
-# use googletest includes and libs
-target_include_directories(testall PUBLIC GTest::gtest GTest::gmock)
+# use googletest's libs
 target_link_libraries(testall GTest::gtest GTest::gmock)
 
 # generate coverage information
