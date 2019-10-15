@@ -29,11 +29,10 @@ target_link_libraries(testall GTest::gtest GTest::gmock)
 
 # generate coverage information
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_compile_options(testall PUBLIC -coverage)
-    target_link_libraries(testall -lgcov)
-  endif()
-  # TODO: generate coverage for clang
+  target_compile_options(testall PUBLIC --coverage)
+  target_link_libraries(testall --coverage)
+else()
+  message(WARNING "Release build type, coverage info is unavailable")
 endif()
 
 # use googletest test discovery
