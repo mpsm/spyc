@@ -1,7 +1,7 @@
 FROM ubuntu:19.04
 RUN apt update && apt install -y wget xz-utils build-essential g++ \
     libncurses-dev libz-dev libz3-dev git libboost-dev curl ninja-build cmake \
-    python-pip
+    python3-pip
 
 # build gtest
 RUN git clone --branch release-1.10.0 https://github.com/google/googletest \
@@ -23,4 +23,5 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libz3.so /usr/lib/libz3.so.4.8
 RUN ln -s /usr/lib/x86_64-linux-gnu/libz3.so /usr/local/lib/libz3.so
 
 # install gcovr for coverage reports
-RUN pip install gcovr
+ENV GCOVR_REV 1f5af01d1a347c917939df34082254544d85a5f1
+RUN pip3 install git+https://github.com/gcovr/gcovr@${GCOVR_REV}
