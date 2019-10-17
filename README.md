@@ -15,43 +15,27 @@ results as a digraph in dot format.
 ### Prerequisites
 
 In order to build SpyC, you need to install first:
-*   GNU/make
-*   C++ compiler (`clang++` recommended)
-*   LLVM and clang development libraries (version `8.0`)
-*   libraries: ncurses, zlib
+*   cmake 3.10
+*   C++ compiler: GCC8 or Clang9
+*   LLVM and clang development libraries (version `9.0`) with dependencies
+*   Googletest if running unittests
+For a complete reference see [Dockerfile](Dockerfile).
 
-On Ubuntu 19.04 run:
+### Building with `cmake`
+
+To build project clone repo and simply run:
 ```bash
-sudo apt install build-essential make clang-8 libclang-8-dev llvm-8-dev ncurses-dev libz-dev
+cmake -B build .
+cmake --build build
 ```
+It will create `spyc` binary in the `build/src` subdirectory.
 
-### Building with make
+### Customizing `cmake` builds
 
-To build project clone repo and run:
-```bash
-make -r -R -j
-```
-It will create `spyc` binary in the `build` subdirectory.
-
-### Customizing make
-
-Following environmental variables changes `make` default behavior:
-*   `BUILD_TYPE=debug` - build development version (`build/spyc-debug`)
-*   `CLANG_SYSROOT` - change clang installation root directory to build against custom clang version
-
-### Build targets
-
-Following phony targets are available:
-*   `app` - build SpyC application
-*   `clean` - remove build objects
-*   `distclean` - delete all artifacts (remove build directory)
-*   `test` - run unit tests
-*   `coverage` - generate coverage report
-*   `all` - build everything
-
-### Known issues with build system
-
-When building with clang, `lcov` will fail to generate coverage report because it expects different format of data emitted by a compiler.
+Apart of standard cmake variables, following variables changes `cmake` default behavior:
+*   `Clang_HINT` - specify Clangs sysroot,
+*   `GTest_HINT` - specify GTest sysroot,
+*   `SPYC_TESTS=ON` - turn on building unittests.
 
 ## Running
 
