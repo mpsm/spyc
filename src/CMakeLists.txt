@@ -12,6 +12,8 @@ add_custom_command(
 )
 
 add_executable(spyc
+               CallGraph.cc
+               CallGraph.hh
                CodeConsumer.hh
                CodeModel.cc
                CodeModel.hh
