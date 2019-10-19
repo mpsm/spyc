@@ -1,8 +1,10 @@
 add_executable(testall
                test.cc
+               CallGraph_test.cc
                CodeModel_test.cc
                Method_test.cc
                utils_test.cc
+               ../src/CallGraph.cc
                ../src/CodeModel.cc
                ../src/Method.cc
 )
@@ -10,7 +12,6 @@ add_executable(testall
 # include Clang relataed tests
 # this option allows to turn off Clang related tests and reduce
 # compilation time
-
 if(NOT DEFINED SPYC_CLANG_TESTS)
   set(SPYC_CLANG_TESTS ON)
 endif()
