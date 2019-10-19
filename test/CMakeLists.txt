@@ -1,17 +1,30 @@
 add_executable(testall
-               CodeModel_test.cc
-               CodeVisitor_test.cc
-               Method_test.cc
                test.cc
+               CodeModel_test.cc
+               Method_test.cc
                utils_test.cc
                ../src/CodeModel.cc
-               ../src/CodeVisitor.cc
                ../src/Method.cc
 )
 
-# add clang tooling
-target_include_directories(testall PUBLIC ${CLANG_INCLUDE_DIRS})
-target_link_libraries(testall clangTooling)
+# include Clang relataed tests
+# this option allows to turn off Clang related tests and reduce
+# compilation time
+message(STATUS ${SPYC_CLANG_TESTS})
+if(NOT DEFINED SPYC_CLANG_TESTS)
+  set(SPYC_CLANG_TESTS ON)
+endif()
+if(SPYC_CLANG_TESTS)
+  message(STATUS "Clang related tests on")
+  target_sources(testall
+    PUBLIC
+      ../src/CodeVisitor.cc
+      CodeVisitor_test.cc
+  )
+  # add clang tooling
+  target_include_directories(testall PUBLIC ${CLANG_INCLUDE_DIRS})
+  target_link_libraries(testall clangTooling)
+endif()
 
 # mark unittest compilation
 target_compile_definitions(testall PUBLIC -DUNITTEST=1)

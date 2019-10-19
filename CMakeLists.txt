@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(SpyC)
 
+# relative/absolute paths policy
+cmake_policy(SET CMP0076 NEW)
+
 # check compiler version
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "8.0.0")
