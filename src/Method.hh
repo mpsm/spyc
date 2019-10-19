@@ -42,4 +42,22 @@ namespace spyc {
 
 } // namespace spyc
 
+namespace std {
+    template <> struct hash<spyc::Method::ID> {
+        std::size_t
+        operator()(const spyc::Method::ID& id) const noexcept
+        {
+            return std::hash<std::string>{}(id.first + ":" + id.second);
+        }
+    };
+
+    template <> struct hash<spyc::Method> {
+        std::size_t
+        operator()(const spyc::Method& m) const noexcept
+        {
+            return std::hash<spyc::Method::ID>{}(m.getID());
+        }
+    };
+} // namespace std
+
 #endif /* __SPYC_METHOD_HH__ */
