@@ -2,7 +2,6 @@
 
 #include "Method.hh"
 
-#include <memory>
 #include <string>
 
 TEST(MethodTest, Init)
@@ -21,30 +20,28 @@ TEST(MethodTest, Equality)
 
 TEST(MethodTest, Link)
 {
-    auto sm1 = std::make_shared<spyc::Method>("aaa");
-    auto sm2 = std::make_shared<spyc::Method>("bbb");
+    spyc::Method m1("aaa"), m2("bbb");
 
-    spyc::linkMethods(sm1, sm2);
+    spyc::linkMethods(m1, m2);
 
-    EXPECT_EQ(sm1->getCallees().size(), 1U);
-    EXPECT_EQ(sm1->getCallers().size(), 0U);
-    EXPECT_EQ(sm2->getCallees().size(), 0U);
-    EXPECT_EQ(sm2->getCallers().size(), 1U);
+    EXPECT_EQ(m1.getCallees().size(), 1U);
+    EXPECT_EQ(m1.getCallers().size(), 0U);
+    EXPECT_EQ(m2.getCallees().size(), 0U);
+    EXPECT_EQ(m2.getCallers().size(), 1U);
 
-    EXPECT_EQ((*sm1->getCallees().begin()).lock(), sm2);
-    EXPECT_EQ((*sm2->getCallers().begin()).lock(), sm1);
+    EXPECT_EQ((*m1.getCallees().begin()).get(), m2);
+    EXPECT_EQ((*m2.getCallers().begin()).get(), m1);
 }
 
 TEST(MethodTest, DoubleLink)
 {
-    auto sm1 = std::make_shared<spyc::Method>("aaa");
-    auto sm2 = std::make_shared<spyc::Method>("bbb");
+    spyc::Method m1("aaa"), m2("bbb");
 
-    spyc::linkMethods(sm1, sm2);
-    spyc::linkMethods(sm1, sm2);
+    spyc::linkMethods(m1, m2);
+    spyc::linkMethods(m1, m2);
 
-    EXPECT_EQ(sm1->getCallees().size(), 1U);
-    EXPECT_EQ(sm1->getCallers().size(), 0U);
+    EXPECT_EQ(m1.getCallees().size(), 1U);
+    EXPECT_EQ(m1.getCallers().size(), 0U);
 }
 
 TEST(MethodTest, SimpleConstruct)

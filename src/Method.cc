@@ -1,6 +1,7 @@
 #include "Method.hh"
 
 #include <algorithm>
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -54,31 +55,30 @@ Method::getCallees() const
 }
 
 void
-Method::addCaller(std::shared_ptr<Method> m)
+Method::addCaller(Method& m)
 {
     insertUniqueMethod(callers, m);
 }
 
 void
-Method::addCallee(std::shared_ptr<Method> m)
+Method::addCallee(Method& m)
 {
     insertUniqueMethod(callees, m);
 }
 
 void
-Method::insertUniqueMethod(methodlist& mlist, std::shared_ptr<Method> m)
+Method::insertUniqueMethod(methodlist& mlist, Method& m)
 {
     if (std::find_if(std::begin(callees), std::end(callees),
-            [&m](std::weak_ptr<Method>& p) { return *m == *p.lock(); }) ==
+            [&m](std::reference_wrapper<Method> p) { return m == p.get(); }) ==
         std::end(callees)) {
         mlist.push_back(m);
     }
 }
 
 void
-spyc::linkMethods(
-    std::shared_ptr<Method> caller, std::shared_ptr<Method> callee)
+spyc::linkMethods(Method& caller, Method& callee)
 {
-    caller->addCallee(callee);
-    callee->addCaller(caller);
+    caller.addCallee(callee);
+    callee.addCaller(caller);
 }
