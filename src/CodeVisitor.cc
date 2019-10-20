@@ -22,7 +22,7 @@ CodeVisitor::VisitCallExpr(clang::CallExpr* expr)
 
     if (callee != nullptr) {
         auto f = _model.getMethod(getFuncDeclID(callee));
-        linkMethods(lastCaller, f);
+        linkMethods(*lastCaller, *f);
     }
 
     return true;

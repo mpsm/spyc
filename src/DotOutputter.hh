@@ -20,9 +20,9 @@ namespace spyc {
                 auto fname = f->getName();
 
                 os << "\t// " << fname << std::endl;
-                for (auto weak_callee : f->getCallees()) {
-                    auto callee = weak_callee.lock();
-                    os << "\t" << fname << " -> " << callee->getName() << ";"
+                for (auto rcallee : f->getCallees()) {
+                    auto& callee = rcallee.get();
+                    os << "\t" << fname << " -> " << callee.getName() << ";"
                        << std::endl;
                 }
             }
