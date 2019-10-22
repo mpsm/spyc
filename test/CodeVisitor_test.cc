@@ -133,9 +133,9 @@ TEST(CodeVisitorTest, OneCall)
     ASSERT_EQ(foo->getCallers().size(), 0U);
     ASSERT_EQ(bar->getCallees().size(), 0U);
 
-    auto callee = foo->getCallees().begin()->lock();
-    auto caller = bar->getCallers().begin()->lock();
+    auto callee = foo->getCallees().begin()->get();
+    auto caller = bar->getCallers().begin()->get();
 
-    ASSERT_EQ(callee, bar);
-    ASSERT_EQ(caller, foo);
+    ASSERT_EQ(callee, *bar);
+    ASSERT_EQ(caller, *foo);
 }
