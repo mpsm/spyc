@@ -10,7 +10,7 @@ add_executable(testall
 # include Clang relataed tests
 # this option allows to turn off Clang related tests and reduce
 # compilation time
-message(STATUS ${SPYC_CLANG_TESTS})
+
 if(NOT DEFINED SPYC_CLANG_TESTS)
   set(SPYC_CLANG_TESTS ON)
 endif()
