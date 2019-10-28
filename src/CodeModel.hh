@@ -28,6 +28,9 @@ namespace spyc {
         const funcmap& getFunctions() const;
         const CallSet& getCalls() const;
 
+        std::vector<std::shared_ptr<Method>> findMethodsByName(
+            const std::string& name) const;
+
         std::shared_ptr<Method> getMethod(Method::ID id);
         void addCall(Method& caller, Method& callee);
 

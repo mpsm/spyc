@@ -53,6 +53,13 @@ spyc <sourcefile> -- -I /usr/local/include
 spyc <sourcefile> compilation_database.json
 ```
 
+### Diagram types
+
+It is possible to generate diagram with either all calls found during code
+parsing (default) or a graph generated starting from specified method using
+`--diagram-type=graph` option. Default starting point is `main`, which can
+be changed with `--graph-start` option.
+
 ### Example
 
 Generate and display callgraph in PNG format (`graphviz` is required):

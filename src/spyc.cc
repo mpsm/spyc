@@ -1,3 +1,4 @@
+#include "CallGraph.hh"
 #include "CodeConsumer.hh"
 #include "CodeModel.hh"
 #include "DotOutputter.hh"
@@ -17,10 +18,21 @@
 
 static llvm::cl::OptionCategory category("SpyC");
 
+enum class CallDiagramType { CALL_MAP, CALL_GRAPH };
+llvm::cl::opt<enum CallDiagramType> CallDiagramTypeOption{"diagram-type",
+    llvm::cl::cat(category), llvm::cl::desc("Call diagram type"),
+    llvm::cl::values(clEnumValN(CallDiagramType::CALL_MAP, "map", "Map"),
+        clEnumValN(CallDiagramType::CALL_GRAPH, "graph", "Graph")),
+    llvm::cl::init(CallDiagramType::CALL_MAP)};
+
+llvm::cl::opt<std::string> CallGraphStartOption{"graph-start",
+    llvm::cl::cat(category), llvm::cl::desc("Call graph starting point"),
+    llvm::cl::init("main")};
+
 static void
 printVersion(llvm::raw_ostream& os)
 {
-    static const std::string version = "0.0.1";
+    static const std::string version = "0.1";
     os << "  SpyC version: " << version;
     if (spyc::gitversion != nullptr) {
         os << "." << spyc::gitversion;
@@ -48,9 +60,27 @@ main(int argc, const char** argv)
         return err;
     }
 
-    {
-        spyc::DotOutputter outputter{std::cout};
+    spyc::DotOutputter outputter{std::cout};
+
+    switch (CallDiagramTypeOption.getValue()) {
+    case CallDiagramType::CALL_MAP:
         outputter.outputCallGraph(model.getCalls());
+        break;
+
+    case CallDiagramType::CALL_GRAPH:
+        const auto& startPoint = CallGraphStartOption.getValue();
+        auto found = model.findMethodsByName(startPoint);
+        if (found.size() == 0) {
+            std::cerr << "Cannot find method: " << startPoint << std::endl;
+            return 1;
+        } else if (found.size() > 1) {
+            std::cerr << "Multiple methods found: " << startPoint << std::endl;
+            return 1;
+        }
+
+        spyc::CallGraph cg(*found[0]);
+        outputter.outputCallGraph(cg.getCalls());
+        break;
     }
 
     return 0;

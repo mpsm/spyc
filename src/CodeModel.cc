@@ -1,11 +1,13 @@
 #include "CodeModel.hh"
 #include "Method.hh"
 
+#include <algorithm>
 #include <exception>
 #include <functional>
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 using namespace spyc;
 
@@ -51,4 +53,20 @@ bool
 CodeModel::hasMethod(const Method& m)
 {
     return functions.find(m.getID()) != functions.end();
+}
+
+std::vector<std::shared_ptr<Method>>
+CodeModel::findMethodsByName(const std::string& name) const
+{
+    std::vector<std::shared_ptr<Method>> result;
+    auto l = [name](const auto& e) { return e.second->getName() == name; };
+    auto it = std::begin(this->functions);
+
+    while ((it = std::find_if(it, std::end(this->functions), l)) !=
+           std::end(this->functions)) {
+        result.push_back(it->second);
+        it++;
+    }
+
+    return result;
 }

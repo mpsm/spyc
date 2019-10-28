@@ -37,3 +37,26 @@ TEST(CodeModelTest, AddCall)
     ASSERT_EQ(caller.get().getName(), "foo");
     ASSERT_EQ(callee.get().getName(), "bar");
 }
+
+TEST(CodeModelTest, FindMethods)
+{
+    spyc::CodeModel cm;
+
+    ASSERT_EQ(cm.findMethodsByName("foo").size(), 0);
+
+    auto foo = cm.getMethod({"foo", ""});
+    auto bar = cm.getMethod({"bar", ""});
+
+    auto found = cm.findMethodsByName("foo");
+
+    ASSERT_EQ(found.size(), 1U);
+    ASSERT_EQ(found[0], foo);
+
+    auto foo2 = cm.getMethod({"foo", "baz.c"});
+
+    ASSERT_NE(foo2, foo);
+
+    auto found2 = cm.findMethodsByName("foo");
+
+    ASSERT_EQ(found2.size(), 2U);
+}
