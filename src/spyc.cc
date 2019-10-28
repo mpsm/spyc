@@ -48,10 +48,8 @@ main(int argc, const char** argv)
         return err;
     }
 
-    {
-        spyc::DotOutputter outputter{std::cout};
-        outputter.outputCallGraph(model.getFunctions());
-    }
+    spyc::DotOutputter outputter{std::cout};
+    outputter.outputCallGraph(model.getFunctions());
 
     return 0;
 }
