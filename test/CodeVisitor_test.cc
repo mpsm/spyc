@@ -26,6 +26,7 @@ class MockModel : public spyc::CodeModelInterface {
 public:
     MOCK_METHOD(
         std::shared_ptr<spyc::Method>, getMethod, (spyc::Method::ID id));
+    MOCK_METHOD(void, addCall, (spyc::Method & caller, spyc::Method& callee));
 };
 
 class TestCodeConsumer : public clang::ASTConsumer {
@@ -124,18 +125,7 @@ TEST(CodeVisitorTest, OneCall)
 
     EXPECT_CALL(model, getMethod(bar->getID())).WillOnce(Return(bar));
     EXPECT_CALL(model, getMethod(foo->getID())).WillOnce(Return(foo));
+    EXPECT_CALL(model, addCall(*foo, *bar));
 
     ASSERT_EQ(run_test_tool(model, filename), 0);
-
-    ASSERT_EQ(foo->getCallees().size(), 1U);
-    ASSERT_EQ(bar->getCallers().size(), 1U);
-
-    ASSERT_EQ(foo->getCallers().size(), 0U);
-    ASSERT_EQ(bar->getCallees().size(), 0U);
-
-    auto callee = foo->getCallees().begin()->get();
-    auto caller = bar->getCallers().begin()->get();
-
-    ASSERT_EQ(callee, *bar);
-    ASSERT_EQ(caller, *foo);
 }
