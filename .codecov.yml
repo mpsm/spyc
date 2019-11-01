@@ -4,8 +4,6 @@ coverage:
   precision: 2
   status:
     project:
-      default:
-        enabled: no
+      default: false
     patch:
-      default:
-        enabled: no
+      default: false
