@@ -15,16 +15,10 @@ namespace spyc {
         {
             os << "digraph callgraph {" << std::endl;
 
-            for (auto fp : range) {
-                auto f = fp.second;
-                auto fname = f->getName();
-
-                os << "\t// " << fname << std::endl;
-                for (auto rcallee : f->getCallees()) {
-                    auto& callee = rcallee.get();
-                    os << "\t" << fname << " -> " << callee.getName() << ";"
-                       << std::endl;
-                }
+            for (auto call : range) {
+                const auto& [caller, callee] = call;
+                os << "\t" << caller.get().getName() << " -> "
+                   << callee.get().getName() << ";" << std::endl;
             }
 
             os << "}" << std::endl;

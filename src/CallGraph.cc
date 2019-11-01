@@ -1,4 +1,5 @@
 #include "CallGraph.hh"
+#include "Call.hh"
 #include "Method.hh"
 
 #include <functional>
@@ -24,7 +25,7 @@ CallGraph::getMethods() const noexcept
     return this->_methods;
 }
 
-const CallGraph::callsList&
+const CallSet&
 CallGraph::getCalls() const noexcept
 {
     return this->_calls;
@@ -52,19 +53,13 @@ CallGraph::hasMethod(const Method& m) const noexcept
 bool
 CallGraph::hasCall(const Method& caller, const Method& callee) const noexcept
 {
-    return hasCall(makeCall(caller, callee));
+    return hasCall(make_call(caller, callee));
 }
 
 bool
-CallGraph::hasCall(const call& c) const noexcept
+CallGraph::hasCall(const Call& c) const noexcept
 {
     return this->_calls.find(c) != this->_calls.end();
-}
-
-CallGraph::call
-CallGraph::makeCall(const Method& caller, const Method& callee) const noexcept
-{
-    return std::make_pair(std::cref(caller), std::cref(callee));
 }
 
 void
@@ -94,12 +89,12 @@ CallGraph::addNode(const Method& m)
 void
 CallGraph::addCall(const Method& caller, const Method& callee)
 {
-    auto call = makeCall(caller, callee);
+    auto call = make_call(caller, callee);
 
     if (hasCall(call)) {
         throw std::logic_error("Call has been already added.");
     }
 
-    this->_calls.insert(makeCall(caller, callee));
+    this->_calls.insert(make_call(caller, callee));
     this->_callCount++;
 }

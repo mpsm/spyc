@@ -4,6 +4,7 @@ add_executable(testall
                CodeModel_test.cc
                Method_test.cc
                utils_test.cc
+               ../src/Call.cc
                ../src/CallGraph.cc
                ../src/CodeModel.cc
                ../src/Method.cc
